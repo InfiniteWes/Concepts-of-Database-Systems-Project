@@ -9,6 +9,7 @@ CREATE TABLE INCIDENT (
   Fire_Type   	varchar(50) not null,
   Incident_Date	date not null, 
   Danger_Level 	int not null,
+  Zipcode		int not null,
   CONSTRAINT pk_incident primary key (Incident_id)
 );
 
@@ -33,10 +34,10 @@ CREATE TABLE PERSONS (
 -- Creation of the Victims Entity / Table --
 DROP TABLE IF EXISTS VICTIMS;
 CREATE TABLE VICTIMS (
-  Person_ID  	int not null auto_increment,
+  Person_ID  	int not null,
   Victim_Name  	varchar(150) not null,
   Victim_ID   int not null auto_increment,
-  CONSTRAINT pk_victims primary key (Person_ID),
+  CONSTRAINT pk_victims primary key (Victim_ID),
   CONSTRAINT fk_victims foreign key (Person_ID) references PERSONS(Person_ID)
 );
 
@@ -56,6 +57,7 @@ CREATE TABLE RECOVERYSITE (
   Site_ID	  	int not null auto_increment,
   Site_Name  	varchar(100) not null,
   Location		varchar(200) not null,
+  Zipcode		int not null,
   CONSTRAINT pk_recoverysite primary key (Site_ID)
 );
 
@@ -66,7 +68,7 @@ CREATE TABLE INCLUDES (
   Person_ID  	int not null,
   CONSTRAINT pk_includes_1 primary key (Plan_ID, Person_ID),
   CONSTRAINT fk_includes_1 foreign key (Person_ID) references PERSONS(Person_ID),
-  CONSTRAINT fk_includes_2 foreign key (Plan_ID) references PLAN(Plan_ID)
+  CONSTRAINT fk_includes_2 foreign key (Plan_ID) references PLANS(Plan_ID)
 );
 
 -- Creation of the Resources Entity / Table --
@@ -116,31 +118,31 @@ CREATE TABLE WORKSFOR (
   Plan_ID  		int not null,
   CONSTRAINT pk_worksfor_1 primary key (Process_ID, Plan_ID),
   CONSTRAINT fk_worksfor_1 foreign key (Process_ID) references BUSINESSPROCESS(Process_ID),
-  CONSTRAINT fk_worksfor_2 foreign key (Plan_ID) references PLAN(Plan_ID)
+  CONSTRAINT fk_worksfor_2 foreign key (Plan_ID) references PLANS(Plan_ID)
 );
 
 -- Populating the Incident Table with some values
-INSERT INTO INCIDENT(Incident_ID, Fire_Type, Incident_Date, Danger_Level) VALUES
-(1, 'Wild Fire', '2/01/2003', 4),
-(2, 'Structural Fire', '2005-06-14', 3),
-(3, 'Vehicle Fire', '2010-09-22', 2),
-(4, 'Chemical Fire', '2012-11-10', 5),
-(5, 'Electrical Fire', '2015-01-05', 3),
-(6, 'Gas Explosion', '2017-07-04', 5),
-(7, 'Kitchen Fire', '2019-03-15', 2),
-(8, 'Industrial Fire', '2020-12-08', 4),
-(9, 'Forest Fire', '2021-08-19', 5),
-(10, 'Warehouse Fire', '2022-02-28', 3),
-(11, 'Arson Incident', '2007-10-30', 4),
-(12, 'Lightning-Caused Fire', '2018-04-09', 4),
-(13, 'Underground Fire', '2006-09-13', 3),
-(14, 'Electrical Substation Fire', '2013-12-25', 4),
-(15, 'Train Car Fire', '2004-07-18', 3),
-(16, 'Fireworks Accident', '2023-01-01', 4),
-(17, 'Residential Fire', '2024-05-10', 2),
-(18, 'Brush Fire', '2011-02-20', 3),
-(19, 'Oil Rig Fire', '2009-08-03', 5),
-(20, 'Landfill Fire', '2025-04-01', 2);
+INSERT INTO INCIDENT(Incident_ID, Fire_Type, Incident_Date, Danger_Level, Zipcode) VALUES
+(1, 'Wild Fire', '2003-01-02', 4, 92105),
+(2, 'Structural Fire', '2005-06-14', 3,37923),
+(3, 'Vehicle Fire', '2010-09-22', 2,37213),
+(4, 'Chemical Fire', '2012-11-10', 5,97214),
+(5, 'Electrical Fire', '2015-01-05', 3,50310),
+(6, 'Gas Explosion', '2017-07-04', 5,50221),
+(7, 'Kitchen Fire', '2019-03-15', 2,78731),
+(8, 'Industrial Fire', '2020-12-08', 4,33012),
+(9, 'Forest Fire', '2021-08-19', 5,80121),
+(10, 'Warehouse Fire', '2022-02-28', 3,78245),
+(11, 'Arson Incident', '2007-10-30', 4,84032),
+(12, 'Lightning-Caused Fire', '2018-04-09', 4,92510),
+(13, 'Underground Fire', '2006-09-13', 3,80210),
+(14, 'Electrical Substation Fire', '2013-12-25', 4,10007),
+(15, 'Train Car Fire', '2004-07-18', 3,12208),
+(16, 'Fireworks Accident', '2023-01-01', 4,84120),
+(17, 'Residential Fire', '2024-05-10', 2,85042),
+(18, 'Brush Fire', '2011-02-20', 3,92509),
+(19, 'Oil Rig Fire', '2009-08-03', 5,33128),
+(20, 'Landfill Fire', '2025-04-01', 2,85123);
 
 -- Populating the Plan table --
 INSERT INTO PLANS(Plan_id, Plan_Type, Information, Incident_ID) VALUES
@@ -166,7 +168,7 @@ INSERT INTO PLANS(Plan_id, Plan_Type, Information, Incident_ID) VALUES
 (20, 'Landfill Smoke Control', 'Cover fire with soil and use odor-reducing chemicals.', 20);
 
 -- Populating the persons table with Person id's --
-INSERT INTO PERSON(Person_ID) VALUES
+INSERT INTO PERSONS(Person_ID) VALUES
 (1), (2), (3), (4), (5), (6), (7), (8), (9), (10), 
 (11), (12), (13), (14), (15), (16), (17), (18), (19), (20), 
 (21), (22), (23), (24), (25), (26), (27), (28), (29), (30),
@@ -214,17 +216,17 @@ INSERT INTO EMPLOYEE(Person_ID, Employee_name, Employee_ID) VALUES
 (35, 'Brooklyn Reed', 19);
 
 -- Populate the Recovery Sitre Entity Table --
-INSERT INTO RECOVERYSITE(Site_ID, Site_Name, Location) VALUES
-(1, 'North Ridge Emergency Shelter', '1024 Pinehill Dr, Denver, CO'),
-(2, 'Silver Lake Relief Center', '5808 Silver St, Austin, TX'),
-(3, 'Maplewood Crisis Hub', '22 Maplewood Ave, Albany, NY'),
-(4, 'Coastal Aid Station', '760 Bayview Rd, San Diego, CA'),
-(5, 'Midwest Recovery Camp', '343 Riverbend Ln, Des Moines, IA'),
-(6, 'Highland Relief Base', '11 Ridgeway Blvd, Salt Lake City, UT'),
-(7, 'Cedar Valley Emergency Grounds', '800 Cedar St, Nashville, TN'),
-(8, 'Bayfield Temporary Shelter', '90 Harbor Rd, Miami, FL'),
-(9, 'Horizon Disaster Response Unit', '555 Skyview Dr, Phoenix, AZ'),
-(10, 'Evergreen Evacuation Center', '1212 Forest Path, Portland, OR');
+INSERT INTO RECOVERYSITE(Site_ID, Site_Name, Location, Zipcode) VALUES
+(1, 'North Ridge Emergency Shelter', '1024 Pinehill Dr, Denver, CO',80024),
+(2, 'Silver Lake Relief Center', '5808 Silver St, Austin, TX',78730),
+(3, 'Maplewood Crisis Hub', '22 Maplewood Ave, Albany, NY',12208),
+(4, 'Coastal Aid Station', '760 Bayview Rd, San Diego, CA',92105),
+(5, 'Midwest Recovery Camp', '343 Riverbend Ln, Des Moines, IA',50316),
+(6, 'Highland Relief Base', '11 Ridgeway Blvd, Salt Lake City, UT',84119),
+(7, 'Cedar Valley Emergency Grounds', '800 Cedar St, Nashville, TN',37210),
+(8, 'Bayfield Temporary Shelter', '90 Harbor Rd, Miami, FL',33126),
+(9, 'Horizon Disaster Response Unit', '555 Skyview Dr, Phoenix, AZ',85042),
+(10, 'Evergreen Evacuation Center', '1212 Forest Path, Portland, OR',97213);
 
 -- Populate the Relation table for Includes --
 INSERT INTO INCLUDES (Plan_ID, Person_ID) VALUES
@@ -327,3 +329,73 @@ INSERT INTO WORKSFOR (Process_ID, Plan_ID) VALUES
 (8, 8),
 (9, 9),
 (10, 10);
+
+-- Queries all incidents' closest recovery site --
+SELECT i.Incident_ID, r.Site_ID, r.Site_name, r.Location, i.Zipcode as Incident_Zip, r.Zipcode as Site_Zip
+FROM Incident i, Recoverysite r
+WHERE r.Zipcode LIKE concat(LEFT(i.Zipcode,2),'%');
+
+ -- Queries a specific incident's closest recovery site --
+SELECT i.Incident_ID, r.Site_ID, r.Site_name, r.Location, i.Zipcode as Incident_Zip, r.Zipcode as Site_Zip
+FROM Incident i, Recoverysite r
+WHERE r.Zipcode LIKE concat(LEFT(i.Zipcode,2),'%') and i.Incident_ID = 2; -- Change the ID for different incidents
+
+-- Queries all incidents for assosiated employees --
+SELECT i.Incident_ID, i.Fire_Type, i.Incident_Date, e.Employee_name, e.Employee_ID
+FROM INCIDENT i
+JOIN PLANS p ON i.Incident_ID = p.Incident_ID
+JOIN INCLUDES inc ON p.Plan_ID = inc.Plan_ID
+JOIN EMPLOYEE e ON inc.Person_ID = e.Person_ID
+ORDER BY i.Incident_ID, e.Employee_name;
+
+-- Queries all incidents a specific employee --
+SELECT i.Incident_ID, i.Fire_Type, i.Incident_Date, e.Employee_name, e.Employee_ID
+FROM INCIDENT i
+JOIN PLANS p ON i.Incident_ID = p.Incident_ID
+JOIN INCLUDES inc ON p.Plan_ID = inc.Plan_ID
+JOIN EMPLOYEE e ON inc.Person_ID = e.Person_ID
+WHERE e.Employee_name LIKE '%Greene%' -- Change the name for different employees
+ORDER BY i.Incident_ID, e.Employee_name;
+
+-- Queries all high danger level incidents --
+SELECT Incident_ID, Fire_Type, Incident_Date, Danger_Level
+FROM INCIDENT
+WHERE Danger_Level >= 4;
+
+-- Queries which sites have a specific resource --
+SELECT s.Site_Name, s.Location
+FROM RECOVERYSITE s
+JOIN CARRIES c ON s.Site_ID = c.Site_ID
+JOIN RESOURCES r ON c.Resource_ID = r.Resource_ID
+WHERE r.Resource_Name = 'Thermal Imaging Camera'; -- Change the resource for different results
+
+-- Queries each plan's specific business process --
+SELECT p.Plan_Type, bp.BP_Name
+FROM PLANS p
+JOIN WORKSFOR wf ON p.Plan_ID = wf.Plan_ID
+JOIN BUSINESSPROCESS bp ON wf.Process_ID = bp.Process_ID
+ORDER BY p.Plan_Type, bp.BP_Level;
+
+-- Queries where each plan has low personnel --
+SELECT p.Plan_Type, COUNT(inc.Person_ID) AS Personnel_Assigned
+FROM PLANS p
+JOIN INCLUDES inc ON p.Plan_ID = inc.Plan_ID
+GROUP BY p.Plan_Type
+HAVING Personnel_Assigned < 2; -- Increased with larger sample
+
+-- Queries each incident type for its plan information --
+SELECT distinct i.Fire_type, p.information
+FROM PLANS p
+JOIN INCIDENT i ON i.Incident_ID = p.Incident_ID;
+
+-- Queries each reasource of a specific type --
+SELECT Resource_Name
+FROM Resources
+WHERE Resource_Type = 'Food Supply'; -- Change the type for different results
+
+-- Queries each high danger level incidents' closest recovery site --
+SELECT High.Incident_ID, r.Site_ID, r.Site_name, r.Location, High.Zipcode as Incident_Zip, r.Zipcode as Site_Zip, High.Danger_Level
+FROM Recoverysite r, (SELECT Incident_ID, Fire_Type, Incident_Date, Danger_Level, Zipcode
+FROM INCIDENT
+WHERE Danger_Level >= 4) as High
+WHERE r.Zipcode LIKE concat(LEFT(High.Zipcode,2),'%');
