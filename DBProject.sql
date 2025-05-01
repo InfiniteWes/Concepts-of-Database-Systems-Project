@@ -66,9 +66,13 @@ DROP TABLE IF EXISTS INCLUDES;
 CREATE TABLE INCLUDES (
   Plan_ID  		int not null,
   Person_ID  	int not null,
-  CONSTRAINT pk_includes_1 primary key (Plan_ID, Person_ID),
+  Victim_ID		int not null,
+  Site_ID		int not null,
+  CONSTRAINT pk_includes_1 primary key (Plan_ID, Person_ID, Victim_ID, Site_ID),
   CONSTRAINT fk_includes_1 foreign key (Person_ID) references PERSONS(Person_ID),
-  CONSTRAINT fk_includes_2 foreign key (Plan_ID) references PLANS(Plan_ID)
+  CONSTRAINT fk_includes_2 foreign key (Plan_ID) references PLANS(Plan_ID),
+  CONSTRAINT fk_includes_3 foreign key (Victim_ID) references VICTIMS(Victim_ID),
+  CONSTRAINT fk_includes_4 foreign key (Site_ID) references RECOVERYSITE(Site_ID)
 );
 
 -- Creation of the Resources Entity / Table --
@@ -172,7 +176,8 @@ INSERT INTO PERSONS(Person_ID) VALUES
 (1), (2), (3), (4), (5), (6), (7), (8), (9), (10), 
 (11), (12), (13), (14), (15), (16), (17), (18), (19), (20), 
 (21), (22), (23), (24), (25), (26), (27), (28), (29), (30),
-(31), (32), (33), (34), (35);
+(31), (32), (33), (34), (35), (36), (37), (38), (39), (40),
+(41), (42), (43), (44), (45), (46), (47), (48), (49);
 
 -- Populating the victims table with the Persons name, victim id and the person id --
 INSERT INTO VICTIMS(Person_ID, Victim_Name, Victim_ID) VALUES
@@ -191,7 +196,21 @@ INSERT INTO VICTIMS(Person_ID, Victim_Name, Victim_ID) VALUES
 (13, 'Isabella Martinez', 13),
 (14, 'Ethan Ross', 14),
 (15, 'Grace Liu', 15),
-(16, 'Omar Haddad', 16);
+(16, 'Omar Haddad', 16),
+(36, 'Fahad Sandoval', 17),
+(37, 'Abby Mcdonald', 18),
+(38, 'Keanu Bright', 19),
+(39, 'Ruby Oliver',20),
+(40, 'Theodore Quinn', 21),
+(41, 'Karina Hill', 22),
+(42, 'Kajus Beck', 23),
+(43, 'Ronan Daugherty', 24),
+(44, 'Kallum Daugherty', 25),
+(45, 'Abbey Dean', 26),
+(46, 'Leyla Bishop', 27),
+(47, 'Penny Frederick', 28),
+(48, 'Jean Frederick', 29),
+(49, 'Mason Zuniga', 30);
 
 -- Populate the employee table with Persons Id, Employee name, and the Employee Id --
 INSERT INTO EMPLOYEE(Person_ID, Employee_name, Employee_ID) VALUES
@@ -229,27 +248,27 @@ INSERT INTO RECOVERYSITE(Site_ID, Site_Name, Location, Zipcode) VALUES
 (10, 'Evergreen Evacuation Center', '1212 Forest Path, Portland, OR',97213);
 
 -- Populate the Relation table for Includes --
-INSERT INTO INCLUDES (Plan_ID, Person_ID) VALUES
-(1, 17), (1, 18),
-(2, 19), (2, 20),
-(3, 21), (3, 22),
-(4, 23), (4, 24),
-(5, 25), (5, 26),
-(6, 27), (6, 28),
-(7, 29),
-(8, 30), (8, 31),
-(9, 32), (9, 33),
-(10, 34),
-(11, 35),
-(12, 17),
-(13, 18), (13, 19),
-(14, 20),
-(15, 21), (15, 22),
-(16, 23),
-(17, 24), (17, 25),
-(18, 26),
-(19, 27), (19, 28),
-(20, 29), (20, 30);
+INSERT INTO INCLUDES (Plan_ID, Person_ID, Victim_ID, Site_ID) VALUES
+(1, 17, 1, 4), (1, 18, 2, 4),
+(2, 19, 3, 7), (2, 20, 4, 7),
+(3, 21, 5, 7), (3, 22, 6 ,7),
+(4, 23, 7, 10), (4, 24,8 ,10),
+(5, 25, 9 , 5), (5, 26, 10 ,5),
+(6, 27, 11, 5), (6, 28, 12 ,5),
+(7, 29, 13, 2),
+(8, 30, 14, 8), (8, 31, 15, 8),
+(9, 32, 16, 1), (9, 33,17,1),
+(10, 34,18,2),
+(11, 35,19,6),
+(12, 17,20,4),
+(13, 18,21,1), (13, 19,21,1),
+(14, 20,22,3),
+(15, 21,23,3), (15, 22,23,3),
+(16, 23,24,6),
+(17, 24,25,9), (17,25,25,9),
+(18, 26,26,4),
+(19, 27,27,8), (19, 28,28,8),
+(20, 29,29,9), (20, 30,30,9);
 
 -- Populating the various resources into the Resources table --
 INSERT INTO RESOURCES (Resource_ID, Resource_Type, Resource_Name) VALUES
