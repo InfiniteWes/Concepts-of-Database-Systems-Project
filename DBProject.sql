@@ -127,26 +127,26 @@ CREATE TABLE WORKSFOR (
 
 -- Populating the Incident Table with some values
 INSERT INTO INCIDENT(Incident_ID, Fire_Type, Incident_Date, Danger_Level, Zipcode) VALUES
-(1, 'Wild Fire', '2003-01-02', 4, 92105),
-(2, 'Structural Fire', '2005-06-14', 3,37923),
-(3, 'Vehicle Fire', '2010-09-22', 2,37213),
-(4, 'Chemical Fire', '2012-11-10', 5,97214),
-(5, 'Electrical Fire', '2015-01-05', 3,50310),
-(6, 'Gas Explosion', '2017-07-04', 5,50221),
-(7, 'Kitchen Fire', '2019-03-15', 2,78731),
-(8, 'Industrial Fire', '2020-12-08', 4,33012),
+(1, 'Wild Fire', '2003-01-02', 4, 55105),
+(2, 'Structural Fire', '2005-06-14', 3,89923),
+(3, 'Vehicle Fire', '2010-09-22', 2,86213),
+(4, 'Chemical Fire', '2012-11-10', 5,55214),
+(5, 'Electrical Fire', '2015-01-05', 3,39310),
+(6, 'Gas Explosion', '2017-07-04', 5,39221),
+(7, 'Kitchen Fire', '2019-03-15', 2,99031),
+(8, 'Industrial Fire', '2020-12-08', 4,28012),
 (9, 'Forest Fire', '2021-08-19', 5,80121),
-(10, 'Warehouse Fire', '2022-02-28', 3,78245),
-(11, 'Arson Incident', '2007-10-30', 4,84032),
-(12, 'Lightning-Caused Fire', '2018-04-09', 4,92510),
-(13, 'Underground Fire', '2006-09-13', 3,80210),
-(14, 'Electrical Substation Fire', '2013-12-25', 4,10007),
-(15, 'Train Car Fire', '2004-07-18', 3,12208),
+(10, 'Warehouse Fire', '2022-02-28', 3,85245),
+(11, 'Arson Incident', '2007-10-30', 4,59032),
+(12, 'Lightning-Caused Fire', '2018-04-09', 4,55510),
+(13, 'Underground Fire', '2006-09-13', 3,99210),
+(14, 'Electrical Substation Fire', '2013-12-25', 4,96007),
+(15, 'Train Car Fire', '2004-07-18', 3,96208),
 (16, 'Fireworks Accident', '2023-01-01', 4,84120),
-(17, 'Residential Fire', '2024-05-10', 2,85042),
-(18, 'Brush Fire', '2011-02-20', 3,92509),
-(19, 'Oil Rig Fire', '2009-08-03', 5,33128),
-(20, 'Landfill Fire', '2025-04-01', 2,85123);
+(17, 'Residential Fire', '2024-05-10', 2,97042),
+(18, 'Brush Fire', '2011-02-20', 3,55509),
+(19, 'Oil Rig Fire', '2009-08-03', 5,28128),
+(20, 'Landfill Fire', '2025-04-01', 2,97123);
 
 -- Populating the Plan table --
 INSERT INTO PLANS(Plan_id, Plan_Type, Information, Incident_ID) VALUES
@@ -236,16 +236,16 @@ INSERT INTO EMPLOYEE(Person_ID, Employee_name, Employee_ID) VALUES
 
 -- Populate the Recovery Sitre Entity Table --
 INSERT INTO RECOVERYSITE(Site_ID, Site_Name, Location, Zipcode) VALUES
-(1, 'North Ridge Emergency Shelter', '1024 Pinehill Dr, Denver, CO',80024),
-(2, 'Silver Lake Relief Center', '5808 Silver St, Austin, TX',78730),
-(3, 'Maplewood Crisis Hub', '22 Maplewood Ave, Albany, NY',12208),
-(4, 'Coastal Aid Station', '760 Bayview Rd, San Diego, CA',92105),
-(5, 'Midwest Recovery Camp', '343 Riverbend Ln, Des Moines, IA',50316),
-(6, 'Highland Relief Base', '11 Ridgeway Blvd, Salt Lake City, UT',84119),
-(7, 'Cedar Valley Emergency Grounds', '800 Cedar St, Nashville, TN',37210),
-(8, 'Bayfield Temporary Shelter', '90 Harbor Rd, Miami, FL',33126),
-(9, 'Horizon Disaster Response Unit', '555 Skyview Dr, Phoenix, AZ',85042),
-(10, 'Evergreen Evacuation Center', '1212 Forest Path, Portland, OR',97213);
+(1, 'Flagstaff Interagency Dispatch Center', '1824 S Thompson St, Flagstaff, AZ',86001),
+(2, 'Phoenix Interagency Dispatch Center', '6335 S Downwind Circle, Ste 101, Mesa, AZ',85212),
+(3, 'Modoc Interagency Command Center', '225 W 8th St, Alturas, CA',96101),
+(4, 'Minnesota Interagency Coordination Center', '402 SE 11th St, Grand Rapids, MN',55744),
+(5, 'Mississippi Interagency Coordination Center', '3139 Hwy 468 W, Pearl, MS',39208),
+(6, 'Rocky Boys Agency Dispatch Center', '98 Veterans Park Rd, Box Elder, MT',59521),
+(7, 'Ely Interagency Communication Center', '702 N Industrial Ave, Ely, NV',89301),
+(8, 'North Carolina Interagency Coordination Center', '160 A Zillicoa St, Asheville,NC',28801),
+(9, 'Lakeview Interagency Fire Center', '1000 S 9th St, Lakeview, OR',97630),
+(10, 'Yukon Fire Dispatch Center', '1541 Gaffney Rd, Fort Wainwright, AK',99703);
 
 -- Populate the Relation table for Includes --
 INSERT INTO INCLUDES (Plan_ID, Person_ID, Victim_ID, Site_ID) VALUES
@@ -445,66 +445,6 @@ JOIN INCLUDES inc on p.Plan_ID = inc.Plan_ID
 JOIN VICTIMS v on v.Victim_ID = inc.Victim_ID) as big
 JOIN RECOVERYSITE r on big.Site_ID = r.Site_ID
 WHERE big.Victim_name = 'Abbey Dean'; -- Change name for different results
-
--- Queries which processes use the most resources --
-SELECT P.BP_Name, COUNT(RQ.Resource_ID) AS Resource_Count
-FROM BUSINESSPROCESS P
-JOIN REQUIRES RQ ON P.Process_ID = RQ.Process_ID
-GROUP BY P.Process_ID
-ORDER BY Resource_Count DESC;
-
--- Queries which plans each business process supports --
-SELECT BP.BP_Name, PL.Plan_Type
-FROM WORKSFOR WF
-JOIN BUSINESSPROCESS BP ON WF.Process_ID = BP.Process_ID
-JOIN PLANS PL ON WF.Plan_ID = PL.Plan_ID;
-
--- Queries employees who are assigned to multiple recovery plans --
-SELECT e.Employee_name, COUNT(DISTINCT inc.Plan_ID) AS Plan_Count
-FROM EMPLOYEE e
-JOIN INCLUDES inc ON e.Person_ID = inc.Person_ID
-GROUP BY e.Employee_name
-HAVING COUNT(DISTINCT inc.Plan_ID) > 1;
-
--- Queries incidents that had the most victims --
-SELECT i.Zipcode, i.Fire_Type, COUNT(DISTINCT v.Victim_ID) AS Victim_Count
-FROM VICTIMS v
-JOIN INCLUDES inc ON v.Victim_ID = inc.Victim_ID
-JOIN PLANS p ON inc.Plan_ID = p.Plan_ID
-JOIN INCIDENT i ON p.Incident_ID = i.Incident_ID
-GROUP BY i.Zipcode, i.Fire_Type
-ORDER BY Victim_Count DESC;
-
--- Queries resources used by more then one business process --
-SELECT r.Resource_Name, COUNT(*) AS Usage_Count
-FROM REQUIRES rq
-JOIN RESOURCES r ON rq.Resource_ID = r.Resource_ID
-GROUP BY r.Resource_ID
-HAVING COUNT(*) > 1
-ORDER BY Usage_Count DESC;
-
--- Queries incidents and sorts them by date ==
-SELECT DATE_FORMAT(Incident_Date, '%Y-%m') AS Month,
-       COUNT(*) AS Incident_Count
-FROM INCIDENT
-GROUP BY Month
-ORDER BY Month;
-
--- Queries employees working on the most dangerous incidents --
-SELECT e.Employee_name, i.Fire_Type, i.Danger_Level
-FROM EMPLOYEE e
-JOIN INCLUDES inc ON e.Person_ID = inc.Person_ID
-JOIN PLANS p ON inc.Plan_ID = p.Plan_ID
-JOIN INCIDENT i ON p.Incident_ID = i.Incident_ID
-WHERE i.Danger_Level = (SELECT MAX(Danger_Level) FROM INCIDENT);
-
-
--- Queries recovery sites used by multiple plans --
-SELECT rs.Site_Name, COUNT(*) AS Usage_Count
-FROM RECOVERYSITE rs
-JOIN INCLUDES inc ON rs.Site_ID = inc.Site_ID
-GROUP BY rs.Site_Name
-ORDER BY Usage_Count DESC;
 
 
 -- views
