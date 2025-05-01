@@ -446,6 +446,71 @@ JOIN VICTIMS v on v.Victim_ID = inc.Victim_ID) as big
 JOIN RECOVERYSITE r on big.Site_ID = r.Site_ID
 WHERE big.Victim_name = 'Abbey Dean'; -- Change name for different results
 
+-- Queries which processes use the most resources --
+SELECT P.BP_Name, COUNT(RQ.Resource_ID) AS Resource_Count
+FROM BUSINESSPROCESS P
+JOIN REQUIRES RQ ON P.Process_ID = RQ.Process_ID
+GROUP BY P.Process_ID
+ORDER BY Resource_Count DESC;
+
+-- Queries which plans each business process supports --
+SELECT BP.BP_Name, PL.Plan_Type
+FROM WORKSFOR WF
+JOIN BUSINESSPROCESS BP ON WF.Process_ID = BP.Process_ID
+JOIN PLANS PL ON WF.Plan_ID = PL.Plan_ID;
+
+-- Queries which incident happened most recently --
+SELECT * FROM INCIDENT 
+ORDER BY Incident_Date DESC 
+LIMIT 1;
+
+-- Queries employees who are assigned to multiple recovery plans --
+SELECT e.Employee_name, COUNT(DISTINCT inc.Plan_ID) AS Plan_Count
+FROM EMPLOYEE e
+JOIN INCLUDES inc ON e.Person_ID = inc.Person_ID
+GROUP BY e.Employee_name
+HAVING COUNT(DISTINCT inc.Plan_ID) > 1;
+
+-- Queries incidents that had the most victims --
+SELECT i.Zipcode, i.Fire_Type, COUNT(DISTINCT v.Victim_ID) AS Victim_Count
+FROM VICTIMS v
+JOIN INCLUDES inc ON v.Victim_ID = inc.Victim_ID
+JOIN PLANS p ON inc.Plan_ID = p.Plan_ID
+JOIN INCIDENT i ON p.Incident_ID = i.Incident_ID
+GROUP BY i.Zipcode, i.Fire_Type
+ORDER BY Victim_Count DESC;
+
+-- Queries resources used by more then one business process --
+SELECT r.Resource_Name, COUNT(*) AS Usage_Count
+FROM REQUIRES rq
+JOIN RESOURCES r ON rq.Resource_ID = r.Resource_ID
+GROUP BY r.Resource_ID
+HAVING COUNT(*) > 1
+ORDER BY Usage_Count DESC;
+
+-- Queries incidents and sorts them by date ==
+SELECT DATE_FORMAT(Incident_Date, '%Y-%m') AS Month,
+       COUNT(*) AS Incident_Count
+FROM INCIDENT
+GROUP BY Month
+ORDER BY Month;
+
+-- Queries employees working on the most dangerous incidents --
+SELECT e.Employee_name, i.Fire_Type, i.Danger_Level
+FROM EMPLOYEE e
+JOIN INCLUDES inc ON e.Person_ID = inc.Person_ID
+JOIN PLANS p ON inc.Plan_ID = p.Plan_ID
+JOIN INCIDENT i ON p.Incident_ID = i.Incident_ID
+WHERE i.Danger_Level = (SELECT MAX(Danger_Level) FROM INCIDENT);
+
+
+-- Queries recovery sites used by multiple plans --
+SELECT rs.Site_Name, COUNT(*) AS Usage_Count
+FROM RECOVERYSITE rs
+JOIN INCLUDES inc ON rs.Site_ID = inc.Site_ID
+GROUP BY rs.Site_Name
+ORDER BY Usage_Count DESC;
+
 
 -- views
 -- Example view for a victim
