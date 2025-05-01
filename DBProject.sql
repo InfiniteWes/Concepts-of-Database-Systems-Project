@@ -351,12 +351,12 @@ INSERT INTO WORKSFOR (Process_ID, Plan_ID) VALUES
 
 -- Queries all incidents' closest recovery site --
 SELECT i.Incident_ID, r.Site_ID, r.Site_name, r.Location, i.Zipcode as Incident_Zip, r.Zipcode as Site_Zip
-FROM Incident i, Recoverysite r
+FROM Incident i, RECOVERYSITE r
 WHERE r.Zipcode LIKE concat(LEFT(i.Zipcode,2),'%');
 
  -- Queries a specific incident's closest recovery site --
 SELECT i.Incident_ID, r.Site_ID, r.Site_name, r.Location, i.Zipcode as Incident_Zip, r.Zipcode as Site_Zip
-FROM Incident i, Recoverysite r
+FROM INCIDENT i, RECOVERYSITE r
 WHERE r.Zipcode LIKE concat(LEFT(i.Zipcode,2),'%') and i.Incident_ID = 2; -- Change the ID for different incidents
 
 -- Queries all incidents for assosiated employees --
@@ -414,10 +414,38 @@ WHERE Resource_Type = 'Food Supply'; -- Change the type for different results
 
 -- Queries each high danger level incidents' closest recovery site --
 SELECT High.Incident_ID, r.Site_ID, r.Site_name, r.Location, High.Zipcode as Incident_Zip, r.Zipcode as Site_Zip, High.Danger_Level
-FROM Recoverysite r, (SELECT Incident_ID, Fire_Type, Incident_Date, Danger_Level, Zipcode
+FROM RECOVERYSITE r, (SELECT Incident_ID, Fire_Type, Incident_Date, Danger_Level, Zipcode
 FROM INCIDENT
 WHERE Danger_Level >= 4) as High
 WHERE r.Zipcode LIKE concat(LEFT(High.Zipcode,2),'%');
+
+-- Queries a list of each incident's victims --
+SELECT i.Incident_Id, i.Fire_type, v.Victim_name
+FROM INCIDENT i
+JOIN PLANS p on i.Incident_ID = p.Incident_id
+JOIN INCLUDES inc on p.Plan_ID = inc.Plan_ID
+JOIN VICTIMS v on v.Victim_ID = inc.Victim_ID;
+
+-- Queries all  victims' Incident Zipcode and Recoverysite --
+Select distinct big.Victim_name, big.Zipcode as Incident_Zip, r.Zipcode as Recovery_Zip
+FROM (SELECT i.Incident_Id, i.Fire_type, v.Victim_name, i.Zipcode, inc.Site_ID
+FROM INCIDENT i
+JOIN PLANS p on i.Incident_ID = p.Incident_id
+JOIN INCLUDES inc on p.Plan_ID = inc.Plan_ID
+JOIN VICTIMS v on v.Victim_ID = inc.Victim_ID) as big
+JOIN RECOVERYSITE r on big.Site_ID = r.Site_ID
+ORDER BY big.Victim_name asc;
+
+-- Queries a specific victim's Incident Zipcode and Recoverysite --
+Select distinct big.Victim_name, big.Zipcode as Incident_Zip, r.Zipcode as Recovery_Zip
+FROM (SELECT i.Incident_Id, i.Fire_type, v.Victim_name, i.Zipcode, inc.Site_ID
+FROM INCIDENT i
+JOIN PLANS p on i.Incident_ID = p.Incident_id
+JOIN INCLUDES inc on p.Plan_ID = inc.Plan_ID
+JOIN VICTIMS v on v.Victim_ID = inc.Victim_ID) as big
+JOIN RECOVERYSITE r on big.Site_ID = r.Site_ID
+WHERE big.Victim_name = 'Abbey Dean'; -- Change name for different results
+
 
 -- views
 -- Example view for a victim
