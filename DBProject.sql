@@ -459,11 +459,6 @@ FROM WORKSFOR WF
 JOIN BUSINESSPROCESS BP ON WF.Process_ID = BP.Process_ID
 JOIN PLANS PL ON WF.Plan_ID = PL.Plan_ID;
 
--- Queries which incident happened most recently --
-SELECT * FROM INCIDENT 
-ORDER BY Incident_Date DESC 
-LIMIT 1;
-
 -- Queries employees who are assigned to multiple recovery plans --
 SELECT e.Employee_name, COUNT(DISTINCT inc.Plan_ID) AS Plan_Count
 FROM EMPLOYEE e
