@@ -506,7 +506,7 @@ ORDER BY Usage_Count DESC;
 -- views
 -- Example view for a victim
 Create view VictimAccess as 
-Select distinct v.Victim_Name, i.Incident_ID, i.Fire_Type, i.Incident_Date, i.Zipcode, Includes.Plan_ID, Includes.Person_ID as EmployeeNum, Includes.Victim_ID, Includes.Site_ID, p.Plan_Type, p.Information as PlanInfo, r.Location as RecoverySiteLocation
+Select distinct v.Victim_Name, i.Fire_Type, i.Incident_Date, i.Zipcode, Includes.Person_ID as EmployeeNum, p.Plan_Type, p.Information as PlanInfo, r.Location as RecoverySiteLocation
 From Incident i, Includes, Victims v, Plans p, RecoverySite r
 Where v.Victim_ID = Includes.Victim_ID 
 AND Includes.plan_id = p.plan_id
@@ -518,7 +518,7 @@ select * from VictimAccess;
 
 -- Example view for an Employee
 Create View EmployeeAccess as
-Select distinct e.Employee_name, p.Plan_ID, p.Plan_Type, p.Information, v.Victim_Name, i.Fire_Type, i.Incident_date, i.Danger_Level, b.BP_Name, r.Resource_Type, r.Resource_Name, rec.Site_Name, rec.Location , i.Zipcode
+Select distinct e.Employee_name, p.Plan_Type, p.Information, v.Victim_Name, i.Fire_Type, i.Incident_date, i.Danger_Level, b.BP_Name, r.Resource_Type, r.Resource_Name, rec.Site_Name, rec.Location , i.Zipcode
 From Employee e, Plans p, Includes, Incident i, WorksFor w, BusinessProcess b, Resources r, Victims v, RecoverySite rec
 Where e.Person_ID = Includes.Person_ID
 AND p.Plan_ID = Includes.Plan_ID
