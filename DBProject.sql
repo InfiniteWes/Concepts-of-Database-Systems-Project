@@ -294,7 +294,9 @@ INSERT INTO RESOURCES (Resource_ID, Resource_Type, Resource_Name) VALUES
 (20, 'Food Supply', 'Rice and Bean Bags'),
 (21, 'Food Supply', 'Infant Formula and Baby Food'),
 (22, 'Food Supply', 'High-Calorie Protein Bars'),
-(23, 'Water Supply', 'Bulk 5-Gallon Water Jugs');
+(23, 'Water Supply', 'Bulk 5-Gallon Water Jugs'),
+(24, 'Explosives Disarming', 'Containment Vessel'),
+(25, 'Fire Prevention', 'Fire Prevention Visual Aid');
 
 -- Populating the carries table --
 INSERT INTO CARRIES (Site_ID, Resource_ID) VALUES
@@ -320,7 +322,10 @@ INSERT INTO BUSINESSPROCESS (Process_ID, BP_Name, BP_Level, Resource_ID) VALUES
 (7, 'Deploy Hazmat Containment', 3, 10),
 (8, 'Setup Power Backup Systems', 2, 7),
 (9, 'Logistics and Storage Management', 2, 11),
-(10, 'Fire Suppression Setup', 3, 9);
+(10, 'Fire Suppression Setup', 3, 9),
+(11, 'Deploy Bomb Squad', 4, 24),
+(12, 'Send Fireman for Safety Demo', 1, 25),
+(13, 'Deploy Robot', 1, 14);
 
 -- Populating the requires relation table --
 INSERT INTO REQUIRES (Process_ID, Resource_ID) VALUES
@@ -340,14 +345,25 @@ INSERT INTO REQUIRES (Process_ID, Resource_ID) VALUES
 INSERT INTO WORKSFOR (Process_ID, Plan_ID) VALUES
 (1, 1),
 (2, 2),
-(3, 3),
-(4, 4),
-(5, 5),
-(6, 6),
-(7, 7),
-(8, 8),
-(9, 9),
-(10, 10);
+(10, 3),
+(7, 4),
+(8, 5),
+(11, 6),
+(12, 7),
+(12, 8),
+(10, 9),
+(12, 10),
+(2, 11),
+(12, 12),
+(13, 13),
+(8, 14),
+(4, 15),
+(12, 16),
+(12, 17),
+(10, 18),
+(3, 19),
+(2, 20);
+
 
 -- Queries all incidents' closest recovery site --
 SELECT i.Incident_ID, r.Site_ID, r.Site_name, r.Location, i.Zipcode as Incident_Zip, r.Zipcode as Site_Zip
