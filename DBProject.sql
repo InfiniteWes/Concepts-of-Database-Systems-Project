@@ -2,6 +2,7 @@ Drop Database if exists DisasterRelief;
 Create Database DisasterRelief;
 Use DisasterRelief;
 
+-- The DDL implementation can be seen in the table creation and insert statements below
 -- Creation of the Incident Entity / Table --
 DROP TABLE IF EXISTS INCIDENT;
 CREATE TABLE INCIDENT (
@@ -365,16 +366,19 @@ INSERT INTO WORKSFOR (Process_ID, Plan_ID) VALUES
 (2, 20);
 
 
+-- Basic DML Query
 -- Queries all incidents' closest recovery site --
 SELECT i.Incident_ID, r.Site_ID, r.Site_name, r.Location, i.Zipcode as Incident_Zip, r.Zipcode as Site_Zip
 FROM Incident i, RECOVERYSITE r
 WHERE r.Zipcode LIKE concat(LEFT(i.Zipcode,2),'%');
 
+-- Basic DML Query
  -- Queries a specific incident's closest recovery site --
 SELECT i.Incident_ID, r.Site_ID, r.Site_name, r.Location, i.Zipcode as Incident_Zip, r.Zipcode as Site_Zip
 FROM INCIDENT i, RECOVERYSITE r
 WHERE r.Zipcode LIKE concat(LEFT(i.Zipcode,2),'%') and i.Incident_ID = 2; -- Change the ID for different incidents
 
+-- Complex DML Query
 -- Queries all incidents for assosiated employees --
 SELECT i.Incident_ID, i.Fire_Type, i.Incident_Date, e.Employee_name, e.Employee_ID
 FROM INCIDENT i
@@ -383,6 +387,7 @@ JOIN INCLUDES inc ON p.Plan_ID = inc.Plan_ID
 JOIN EMPLOYEE e ON inc.Person_ID = e.Person_ID
 ORDER BY i.Incident_ID, e.Employee_name;
 
+-- Complex DML Query
 -- Queries all incidents a specific employee --
 SELECT i.Incident_ID, i.Fire_Type, i.Incident_Date, e.Employee_name, e.Employee_ID
 FROM INCIDENT i
@@ -392,11 +397,13 @@ JOIN EMPLOYEE e ON inc.Person_ID = e.Person_ID
 WHERE e.Employee_name LIKE '%Greene%' -- Change the name for different employees
 ORDER BY i.Incident_ID, e.Employee_name;
 
+-- Basic DML Query
 -- Queries all high danger level incidents --
 SELECT Incident_ID, Fire_Type, Incident_Date, Danger_Level
 FROM INCIDENT
 WHERE Danger_Level >= 4;
 
+-- Complex DML Query
 -- Queries which sites have a specific resource --
 SELECT s.Site_Name, s.Location
 FROM RECOVERYSITE s
@@ -404,6 +411,7 @@ JOIN CARRIES c ON s.Site_ID = c.Site_ID
 JOIN RESOURCES r ON c.Resource_ID = r.Resource_ID
 WHERE r.Resource_Name = 'Thermal Imaging Camera'; -- Change the resource for different results
 
+-- Complex DML Query
 -- Queries each plan's specific business process --
 SELECT p.Plan_Type, bp.BP_Name
 FROM PLANS p
@@ -411,6 +419,7 @@ JOIN WORKSFOR wf ON p.Plan_ID = wf.Plan_ID
 JOIN BUSINESSPROCESS bp ON wf.Process_ID = bp.Process_ID
 ORDER BY p.Plan_Type, bp.BP_Level;
 
+-- Complex DML Query
 -- Queries where each plan has low personnel --
 SELECT p.Plan_Type, COUNT(inc.Person_ID) AS Personnel_Assigned
 FROM PLANS p
@@ -418,16 +427,19 @@ JOIN INCLUDES inc ON p.Plan_ID = inc.Plan_ID
 GROUP BY p.Plan_Type
 HAVING Personnel_Assigned < 2; -- Increased with larger sample
 
+-- Complex DML Query
 -- Queries each incident type for its plan information --
 SELECT distinct i.Fire_type, p.information
 FROM PLANS p
 JOIN INCIDENT i ON i.Incident_ID = p.Incident_ID;
 
+-- Basic DML Query
 -- Queries each reasource of a specific type --
 SELECT Resource_Name
 FROM Resources
 WHERE Resource_Type = 'Food Supply'; -- Change the type for different results
 
+-- Basic DML Query
 -- Queries each high danger level incidents' closest recovery site --
 SELECT High.Incident_ID, r.Site_ID, r.Site_name, r.Location, High.Zipcode as Incident_Zip, r.Zipcode as Site_Zip, High.Danger_Level
 FROM RECOVERYSITE r, (SELECT Incident_ID, Fire_Type, Incident_Date, Danger_Level, Zipcode
@@ -435,6 +447,7 @@ FROM INCIDENT
 WHERE Danger_Level >= 4) as High
 WHERE r.Zipcode LIKE concat(LEFT(High.Zipcode,2),'%');
 
+-- Complex DML Query
 -- Queries a list of each incident's victims --
 SELECT distinct i.Incident_Id, i.Fire_type, v.Victim_name
 FROM INCIDENT i
@@ -442,6 +455,7 @@ JOIN PLANS p on i.Incident_ID = p.Incident_id
 JOIN INCLUDES inc on p.Plan_ID = inc.Plan_ID
 JOIN VICTIMS v on v.Victim_ID = inc.Victim_ID;
 
+-- Complex DML Query
 -- Queries all  victims' Incident Zipcode and Recoverysite --
 Select distinct big.Victim_name, big.Zipcode as Incident_Zip, r.Zipcode as Recovery_Zip
 FROM (SELECT i.Incident_Id, i.Fire_type, v.Victim_name, i.Zipcode, inc.Site_ID
@@ -452,6 +466,7 @@ JOIN VICTIMS v on v.Victim_ID = inc.Victim_ID) as big
 JOIN RECOVERYSITE r on big.Site_ID = r.Site_ID
 ORDER BY big.Victim_name asc;
 
+-- Complex DML Query
 -- Queries a specific victim's Incident Zipcode and Recoverysite --
 Select distinct big.Victim_name, big.Zipcode as Incident_Zip, r.Zipcode as Recovery_Zip
 FROM (SELECT i.Incident_Id, i.Fire_type, v.Victim_name, i.Zipcode, inc.Site_ID
@@ -462,6 +477,7 @@ JOIN VICTIMS v on v.Victim_ID = inc.Victim_ID) as big
 JOIN RECOVERYSITE r on big.Site_ID = r.Site_ID
 WHERE big.Victim_name = 'Abbey Dean'; -- Change name for different results
 
+-- Complex DML Query
 -- Queries which processes use the most resources --
 SELECT P.BP_Name, COUNT(RQ.Resource_ID) AS Resource_Count
 FROM BUSINESSPROCESS P
@@ -469,11 +485,13 @@ JOIN REQUIRES RQ ON P.Process_ID = RQ.Process_ID
 GROUP BY P.Process_ID
 ORDER BY Resource_Count DESC;
 
+-- Basic DML Query
 -- Queries which incident happened most recently --
 SELECT * FROM INCIDENT 
 ORDER BY Incident_Date DESC 
 LIMIT 1; 
 
+-- Complex DML Query
 -- Queries employees who are assigned to multiple recovery plans --
 SELECT e.Employee_name, COUNT(DISTINCT inc.Plan_ID) AS Plan_Count
 FROM EMPLOYEE e
@@ -481,6 +499,7 @@ JOIN INCLUDES inc ON e.Person_ID = inc.Person_ID
 GROUP BY e.Employee_name
 HAVING COUNT(DISTINCT inc.Plan_ID) > 1;
 
+-- Complex DML Query
 -- Queries incidents that had the most victims -- 
 SELECT i.Zipcode, i.Fire_Type, COUNT(DISTINCT v.Victim_ID) AS Victim_Count
 FROM VICTIMS v
@@ -490,6 +509,7 @@ JOIN INCIDENT i ON p.Incident_ID = i.Incident_ID
 GROUP BY i.Zipcode, i.Fire_Type
 ORDER BY Victim_Count DESC;
 
+-- Complex DML Query
 -- Queries resources used by more than one business process --
 SELECT r.Resource_Name, COUNT(*) AS Usage_Count 
 FROM REQUIRES rq
@@ -498,12 +518,14 @@ GROUP BY r.Resource_ID
 HAVING COUNT(*) > 1
 ORDER BY Usage_Count DESC;
 
+-- Basic DML Query
 -- Queries incidents and sorts them by date == 
 SELECT DATE_FORMAT(Incident_Date, '%Y-%m') AS Month, COUNT(*) AS Incident_Count
 FROM INCIDENT
 GROUP BY Month
 ORDER BY Month; 
 
+-- Complex DML Query
 -- Queries employees working on the most dangerous incidents --
 SELECT e.Employee_name, i.Fire_Type, i.Danger_Level
 FROM EMPLOYEE e
@@ -511,7 +533,8 @@ JOIN INCLUDES inc ON e.Person_ID = inc.Person_ID
 JOIN PLANS p ON inc.Plan_ID = p.Plan_ID
 JOIN INCIDENT i ON p.Incident_ID = i.Incident_ID
 WHERE i.Danger_Level = (SELECT MAX(Danger_Level) FROM INCIDENT);
- 
+
+-- Complex DML Query
 -- Queries recovery sites used by multiple plans --
 SELECT rs.Site_Name, COUNT(*) AS Usage_Count
 FROM RECOVERYSITE rs
@@ -528,8 +551,9 @@ Where v.Victim_ID = Includes.Victim_ID
 AND Includes.plan_id = p.plan_id
 AND p.incident_id = i.incident_id
 AND includes.site_id = r.site_ID
-AND v.Victim_Name = 'Theodore Quinn';
+AND v.Victim_Name = 'Theodore Quinn'; -- Name changes depending on which Victim is accessing the system
 
+-- Show example VictimAccess information
 select * from VictimAccess;
 
 -- Example view for an Employee
@@ -544,6 +568,6 @@ AND w.Process_Id = b.Process_ID
 AND b.Resource_ID = r.Resource_ID
 AND v.Victim_ID = Includes.Victim_ID
 AND rec.Site_ID = Includes.Site_ID
-AND e.Employee_Name = 'Rachel Greene';
+AND e.Employee_Name = 'Rachel Greene'; -- Name changes depending on which Employee is accessing the system
 
 select * from EmployeeAccess;
